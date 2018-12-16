@@ -15,6 +15,20 @@ public class DeleteDuplicates {
         }
         return head;
     }
+
+    public int removeDuplicates(int[] nums){
+        if(nums == null)
+            return 0;
+        int i = 0;
+        for (int j = 1; j < nums.length; j++ ) {
+            if(nums[i] != nums[j]){
+                i++;
+                nums[i] = nums[j];
+            }
+        }
+        //不同的个数=跳的次数+1
+        return i + 1;
+    }
     public ListNode deleteDuplicatesOffical(ListNode head){
         ListNode p = head;
         while (p != null && p.next != null){
