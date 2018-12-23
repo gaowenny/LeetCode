@@ -1,6 +1,6 @@
 public class DecodeIndex {
 
-//会有内存泄漏
+//会超出内存限制
     public String decodeAtIndex(String S, int K) {
         String sDecode = String.valueOf(S.charAt(0));
         for (int i = 1; i < S.length(); i++){
