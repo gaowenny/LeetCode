@@ -66,11 +66,35 @@ public class Dynamic {
         return max;
     }
 
+
+    public int rob(int[] nums) {
+        int maxProfit = 0;
+        int[] profits = new int[nums.length];
+        if(nums.length == 0){
+            maxProfit = 0;
+        }else if (nums.length == 1){
+            maxProfit =  nums[0];
+        }else if(nums.length == 2){
+            maxProfit = Math.max(nums[0], nums[1]);
+        }else if(nums.length == 3){
+            maxProfit = Math.max(nums[0] + nums[2], nums[1]);
+        }else{
+            profits[0] = nums[0];
+            profits[1] = nums[1];
+            profits[2] = Math.max(profits[0] + nums[2], profits[1]);
+            maxProfit = profits[2];
+            for (int i = 3; i < nums.length; i++){
+                profits[i] = Math.max(Math.max(profits[i-2]+nums[i], profits[i-3]+nums[i-1]), profits[i-3] + nums[i]);
+                maxProfit = Math.max(maxProfit, profits[i]);
+            }
+        }
+        return maxProfit;
+    }
     public static void main(String[] args){
-        int[] nums = {-2,1,-3,4,-1,2,1,-5,4};
+        int[] nums = {2,1,1,2,3,4,5,6,7,8,3,2,1,5,3,4,6};
         Dynamic o = new Dynamic();
 
-        System.out.println(o.maxSubArray(nums));
+        System.out.println(o.rob(nums));
     }
 
 }
