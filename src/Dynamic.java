@@ -90,11 +90,63 @@ public class Dynamic {
         }
         return maxProfit;
     }
+
+    public int climbStairsRecursion(int n) {
+        if(n == 1){
+            return 1;
+        }else if (n == 2){
+            return 2;
+        }else {
+            return climbStairsRecursion(n-1) + climbStairsRecursion(n-2);
+        }
+    }
+
+    public int climbStairs(int n){
+        int maxWay = 0;
+        int[] ways = new  int[n];
+        if(n == 1){
+            maxWay = 1;
+        }else if (n == 2){
+            maxWay = 2;
+        }else {
+            ways[0] = 1;
+            ways[1] = 2;
+            for(int i = 2; i < n; i++){
+                ways[i] = ways[i-2] + ways[i-1];
+            }
+            maxWay = ways[n-1];
+        }
+        return maxWay;
+    }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int[] stariCosts = new int[cost.length];
+        if(cost.length == 0){
+             return  0;
+        }else if(cost.length == 1){
+            stariCosts[0] = cost[0];
+        }else if(cost.length == 2){
+            stariCosts[1] = Math.min(cost[0], cost[1]);
+        }else if (cost.length == 3){
+            stariCosts[2] = Math.min(cost[0] + cost[2], cost[1]);
+        }else if(cost.length == 4) {
+            stariCosts[3] = Math.min(Math.min(cost[0] + cost[2], cost[1] + cost[3]), cost[1]+cost[2]);
+        } else {
+            stariCosts[0] = cost[0];
+            stariCosts[1] = Math.min(cost[0], cost[1]);
+            stariCosts[2] = Math.max(stariCosts[0] + cost[2], cost[1]);
+            stariCosts[3] = Math.min(Math.min(cost[0] + cost[2], cost[1] + cost[3]), cost[1]+cost[2]);
+            for (int i = 4; i < cost.length; i++){
+                stariCosts[i] = Math.min(Math.min(stariCosts[i-3]+cost[i-2]+cost[i],stariCosts[i-3]+cost[i-2]+cost[i-1]),Math.min(stariCosts[i-1] + cost[i],stariCosts[i-2] + cost[i-1]));
+            }
+        }
+        return stariCosts[cost.length-1];
+    }
     public static void main(String[] args){
-        int[] nums = {2,1,1,2,3,4,5,6,7,8,3,2,1,5,3,4,6};
+        int[] nums = {841,462,566,398,243,248,238,650,989,576,361};
         Dynamic o = new Dynamic();
 
-        System.out.println(o.rob(nums));
+        System.out.println(o.minCostClimbingStairs(nums));
     }
 
 }
