@@ -129,21 +129,18 @@ public class Dynamic {
             stariCosts[1] = Math.min(cost[0], cost[1]);
         }else if (cost.length == 3){
             stariCosts[2] = Math.min(cost[0] + cost[2], cost[1]);
-        }else if(cost.length == 4) {
-            stariCosts[3] = Math.min(Math.min(cost[0] + cost[2], cost[1] + cost[3]), cost[1]+cost[2]);
         } else {
             stariCosts[0] = cost[0];
             stariCosts[1] = Math.min(cost[0], cost[1]);
-            stariCosts[2] = Math.max(stariCosts[0] + cost[2], cost[1]);
-            stariCosts[3] = Math.min(Math.min(cost[0] + cost[2], cost[1] + cost[3]), cost[1]+cost[2]);
-            for (int i = 4; i < cost.length; i++){
-                stariCosts[i] = Math.min(Math.min(stariCosts[i-3]+cost[i-2]+cost[i],stariCosts[i-3]+cost[i-2]+cost[i-1]),Math.min(stariCosts[i-1] + cost[i],stariCosts[i-2] + cost[i-1]));
+            stariCosts[2] = Math.min(stariCosts[0] + cost[2], cost[1]);
+            for (int i = 3; i < cost.length; i++){
+                stariCosts[i] = Math.min(stariCosts[i-1]+cost[i],stariCosts[i-2]+cost[i-1]);
             }
         }
         return stariCosts[cost.length-1];
     }
     public static void main(String[] args){
-        int[] nums = {841,462,566,398,243,248,238,650,989,576,361};
+        int[] nums = {10,6,7,5,3,2,1,9,11,8,4};
         Dynamic o = new Dynamic();
 
         System.out.println(o.minCostClimbingStairs(nums));
