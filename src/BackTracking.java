@@ -255,6 +255,5 @@ public class BackTracking {
 //       System.out.println( o.letterCasePermutation("1ab2"));
 //        o.pailie("ab", "");
         System.out.println(o.permute(nums));
-
     }
 }
