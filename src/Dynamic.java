@@ -1,3 +1,8 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Dynamic {
 
     public int lengthOfLIS(int[] nums) {
@@ -139,11 +144,140 @@ public class Dynamic {
         }
         return stariCosts[cost.length-1];
     }
-    public static void main(String[] args){
-        int[] nums = {10,6,7,5,3,2,1,9,11,8,4};
-        Dynamic o = new Dynamic();
 
-        System.out.println(o.minCostClimbingStairs(nums));
+    //最大整除子集
+    public List<Integer> largestDivisibleSubset(int[] nums) {
+        List<List<Integer>> numsLists = new ArrayList<>();
+        List<Integer> resultList = new ArrayList<>();
+        if (nums.length == 0){
+           return resultList;
+        }
+        Arrays.sort(nums);
+        List<Integer> l1 = new ArrayList<>();
+        l1.add(nums[0]);
+        numsLists.add(l1);
+        for (int i = 1; i< nums.length; i++){
+            List<Integer> li = new ArrayList<>();
+            li.add(nums[i]);
+            for(int j = i - 1; j >= 0 ; j--){
+                List<Integer> lLast = numsLists.get(j);
+                if(nums[i]%nums[j] == 0 && lLast.size() + 1 > li.size() ){
+                    li.clear();
+                    li.add(nums[i]);
+                    li.addAll(lLast);
+                }
+            }
+            numsLists.add(li);
+        }
+        for (int i =0; i<numsLists.size(); i++){
+            if(numsLists.get(i).size() > resultList.size()){
+                resultList = numsLists.get(i);
+            }
+        }
+        return  resultList;
+    }
+
+    public List<Integer> largestDivisibleSubsetoFFical(int[] nums) {
+        int len = nums.length, m = 0, mi = 0;
+        int[] array = new int[len];
+        int[] num = new int[len];
+
+        Arrays.sort(nums);
+
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j >= 0; j--) {
+                if (nums[i] % nums[j] == 0 && array[j] + 1 > array[i]) {
+                    array[i] = array[j] + 1;
+                    num[i] = j;
+                }
+            }
+            if (array[i] > m) {
+                m = array[i];
+                mi = i;
+            }
+        }
+
+        List<Integer> res = new ArrayList<>();
+        for (int i = 0; i < m; i++) {
+            res.add(nums[mi]);
+            mi = num[mi];
+        }
+
+        return res;
+    }
+
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m+1][n+1];
+        for(int i = 0; i<strs.length; i++){
+            String s = strs[i];
+            int mCount = 0, nCount = 0;
+            for (int j = 0; j<s.length(); j++){
+                if(s.charAt(j) == '0') mCount += 1;
+                if(s.charAt(j) == '1') nCount += 1;
+            }
+            for (int j = m; j >= mCount; j--){
+                for (int k = n; k >= nCount; k--){
+                    dp[j][k] = Math.max(dp[j][k], dp[j-mCount][k-nCount] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    public int uniquePaths(int m, int n) {
+        int[][] path = new int[m][n];
+        for(int i = 0; i<m; i++){
+            for(int j = 0; j < n; j++){
+                if(i == 0){
+                    path[i][j] = 1;
+                }else if(j==0){
+                    path[i][j] = 1;
+                }else {
+                    path[i][j] = path[i-1][j] + path[i][j-1];
+                }
+            }
+        }
+        return path[m-1][n-1];
+    }
+
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int m = obstacleGrid.length;
+        int[][] path = new int[m][];
+        int n = 0;
+        for(int i = 0; i<m; i++){
+            n = obstacleGrid[i].length;
+            path[i] = new int[n];
+            for(int j = 0; j < obstacleGrid[i].length; j++){
+                if(obstacleGrid[i][j] == 1){
+                    path[i][j] = 0;
+                    continue;
+                }
+                if(i == 0 && j == 0){
+                    path[i][j] = 1;
+                }else {
+                    if (i == 0) {
+                        path[i][j] = path[i][j - 1];
+                    }
+                    if (j == 0) {
+                        path[i][j] = path[i-1][j];
+                    }
+                    if(i !=0 && j!=0){
+                        path[i][j] = path[i - 1][j] + path[i][j - 1];
+                    }
+                }
+            }
+        }
+        return path[m-1][n-1];
+    }
+    public static void main(String[] args){
+        int[] nums = {3,4,8,16,1,9,18,24,43};
+        Dynamic o = new Dynamic();
+        String[] strs = {"111","1000","1000","1000"};
+        int[][] obs = {{1,0}};
+        System.out.println(o.uniquePathsWithObstacles(obs));
+
+
+
     }
 
 }
