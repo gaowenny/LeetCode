@@ -21,6 +21,7 @@ public class NumArray {
         }
     }
 
+
     public static void main(String[] args){
         int[] nums = {-2, 0, 3, -5, 2, -1};
         NumArray o = new NumArray(nums);
