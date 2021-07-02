@@ -1,3 +1,5 @@
+import java.util.HashMap;
+
 public class MathClass {
 
     // 每当与最大值对齐一次，则需要将最小值增加m次，这时候比最小值大的数均会大于原先的最大数。
@@ -29,7 +31,32 @@ public class MathClass {
       }
       return nCount;
     }
+    public String originalDigits(String s) {
+        HashMap<Character, String> hashWord = new HashMap<>();
+        hashWord.put('z', "zero");
+        hashWord.put('w', "two");
+        hashWord.put('u', "four");
+        hashWord.put('x', "six");
+        hashWord.put('g', "ehight");
+        hashWord.put('o', "one");
+        hashWord.put('h', "three");
+        hashWord.put('f', "five");
+        hashWord.put('s', "seven");
+        hashWord.put('i', "nine");
+        int[] num = {0,2,4,6,8,1,3,5,7,9};
+        int[] sResult = new int[10];
+        HashMap<Character, Integer> hashChar = new HashMap<>();
+        for(int i = 0; i< s.length(); i++){
+            if (hashChar.containsValue(s.charAt(i))){
+//                hashChar. = hashChar.get()
+            }
+        }
+        Character[] letter = {'z','w','u','x','g','o','h','f','s','i'};
+        for (int i = 0; i < letter.length; i++){
 
+        }
+        return "";
+    }
     public static void main(String[] args){
         MathClass o= new MathClass();
         int[] nums = {1,2,3,4,5,6};

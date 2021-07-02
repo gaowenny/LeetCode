@@ -1,4 +1,5 @@
 
+import javax.print.DocFlavor;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -58,22 +59,112 @@ class Node{
             System.out.println(stack.pop());
         }
     }
-    public static void main(String[] args){
-        ListNode l1 = new ListNode(1);
-        ListNode l2 = new ListNode(3);
-        ListNode p1 = l1;
-        ListNode p2 = l2;
-        for (int i = 3; i< 6; i++){
-            p1.next =  new ListNode(i + 1);
-            p2.next = new ListNode(i + 2);
-            p1 = p1.next;
-            p2 = p2.next;
+
+    private void stackPop(Stack stack, ListNode listNode){
+        while (!stack.isEmpty()){
+            listNode.next = new ListNode((int)stack.pop());
+            listNode = listNode.next;
         }
-//        l1.next = l2;
+    }
+    // 分割链表1966
+    public ListNode partition(ListNode head, int x){
+        ListNode p = head;
+        ListNode minHead = new ListNode(0);
+        ListNode maxHead = new ListNode(0);
+        ListNode minTail = minHead;
+        ListNode maxSlow = maxHead;
+        ListNode maxTail =  maxHead;
+        while (null != p){
+            if (p.val < x){
+                minTail.next = p;
+                minTail = minTail.next;
+            }else if (p.val == x){
+                maxTail.next = p;
+                maxSlow = maxTail;
+                maxTail = maxTail.next;
+            }else {
+                ListNode temp = new ListNode(p.val);
+                if (maxSlow.equals(maxTail)){
+                    maxTail.next = temp;
+                    maxSlow = maxTail;
+                    maxTail = maxTail.next;
+                }else {
+                    temp.next = maxTail;
+                    maxSlow.next = temp;
+                    maxSlow = maxSlow.next;
+                }
+            }
+            p = p.next;
+        }
+        minTail.next = maxHead.next;
+        maxTail.next = null;
+        return minHead.next;
+    }
+
+    // 141 环形链表
+    public boolean hasCycle(ListNode head) {
+       if(head == null || head.next == null){
+           return false;
+       }
+       ListNode slow = head;
+       ListNode fast = head.next;
+       while (slow != fast){
+           if (fast == null || fast.next == null){
+               return false;
+           }
+           slow = slow.next;
+           fast = fast.next.next;
+       }
+       return true;
+    }
+//环形链表检测2
+    public ListNode detectCycle(ListNode head) {
+        if(head == null || head.next == null){
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        do{
+            if (fast == null || fast.next == null){
+                return null;
+            }
+            slow = slow.next;
+            fast = fast.next.next;
+        } while (slow != fast);
+        ListNode p  = head;
+        while (p != slow){
+            slow = slow.next;
+            p = p.next;
+        }
+        return p;
+    }
+
+
+
+
+    public static void main(String[] args){
+        List<Integer> list = new ArrayList<>();
+        list.add(3);
+        list.add(2);
+        list.add(0);
+        list.add(-4);
+
+        ListNode l1 = new ListNode(3);
+        ListNode l2 = new ListNode(2);
+        ListNode l3 = new ListNode(0);
+        ListNode l4 = new ListNode(-4);
+        l1.next = l2;
+        l2.next = l3;
+        l3.next = l4;
+        l4.next = l2;
+
         Node o = new Node();
-//        o.removeNthFromEnd(l1, 2);
-//        o.reorderList(l1);
-        o.printListReversingly(l1);
+        o.detectCycle(l1);
+
+        while (null != l1){
+            System.out.print(l1.val);
+            l1 = l1.next;
+        }
     }
 
 }
