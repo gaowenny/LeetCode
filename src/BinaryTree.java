@@ -1,8 +1,10 @@
 
 import com.sun.source.tree.Tree;
 
+import javax.swing.plaf.InsetsUIResource;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.stream.Collectors;
 
 class TreeNode {
     int val;
@@ -93,7 +95,7 @@ public class BinaryTree{
         dfs(root2, leaves2);
         return leaves1.equals(leaves2);
     }
-    // 非递归前序遍历
+    // 递归前序遍历
     public List<Integer> preorderTraversal(TreeNode root) {
         List<Integer> result = new LinkedList<>();
         if (root == null){
@@ -213,9 +215,273 @@ public class BinaryTree{
         }
         return minDep + 1;
     }
-    //非递归
-    public int minDepthEx(){
+    //非递归最小深度深度遍历（后序）
+    public int minDepthEx(TreeNode root){
+        int min = Integer.MAX_VALUE, level = 0;
+        if (root == null){
+            return 0;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode last = root;
+        while (!stack.isEmpty() || root != null){
+            while (root != null){
+                stack.push(root);
+                level++;
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+                if (root.right == null || root.right == last){
+                    if (root.left == null && root.right == null){
+                        min = Math.min(level, min);
+                    }
+                    last = root;
+                    level--;
+                    root = null;
+                }else {
+                    stack.push(root);
+                    root = root.right;
+                }
+            }
+        }
+        return min;
+    }
+    //非递归最小深度之广度遍历
+    public int minDepthEEx(TreeNode root){
+        int min = Integer.MAX_VALUE, level = 0;
+        if (root == null){
+            return 0;
+        }
+        Queue<Map.Entry<TreeNode, Integer>> queue = new LinkedList<>();
+        queue.offer(new AbstractMap.SimpleEntry<TreeNode, Integer>(root, 1));
+        while (!queue.isEmpty()){
+            Map.Entry<TreeNode, Integer> temp = queue.poll();
+            root = temp.getKey();
+            level = temp.getValue();
+            if (root.right == null && root.left == null){
+                return level;
+            }
+            if (root.left != null){
+                queue.offer(new AbstractMap.SimpleEntry<TreeNode, Integer>(root.left, level + 1));
+            }
+            if (root.right != null){
+                queue.offer(new AbstractMap.SimpleEntry<TreeNode, Integer>(root.right, level + 1));
+            }
+        }
         return 0;
+    }
+    int maxSum = Integer.MIN_VALUE;
+    private int doGetMax(TreeNode root){
+        if(root == null){
+            return  0;
+        }
+        int left = Math.max(0, doGetMax(root.left));
+        int right = Math.max(0, doGetMax(root.right));
+        maxSum = Math.max(maxSum, left+right+root.val);
+        return Math.max(right, left) + root.val;
+    }
+    public int maxPathSum(TreeNode root) {
+        int n = doGetMax(root);
+        return maxSum;
+    }
+    //112. 路径总和 I 递归
+    public boolean hasPathSum(TreeNode root, int targetSum) {
+        if (root == null){
+            return false;
+        }
+        if (root.left == null && root.right == null){
+            return targetSum == root.val;
+        }
+        return hasPathSum(root.left, targetSum - root.val) ||
+                hasPathSum(root.right, targetSum - root.val);
+    }
+    //112. 路径总和 I 非递归 深度遍历
+    public boolean hasPathSumEx(TreeNode root, int targetSum) {
+        boolean bResult  = false;
+        if (root == null){
+            return bResult;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode last = root;
+        Integer tempSum = 0;
+        while (root != null || !stack.isEmpty()){
+            while (root != null){
+                tempSum = tempSum + root.val;
+                stack.push(root);
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+                if (root.right == null || root.right == last){
+                    if (root.left == null && root.right == null){
+                        if(tempSum == targetSum){
+                            bResult = true;
+                            break;
+                        }
+                    }
+                    tempSum = tempSum - root.val;
+                    last = root;
+                    root = null;
+                }else{
+                    if (root.right != null){
+                        stack.push(root);
+                        root = root.right;
+                    }
+                }
+            }
+        }
+        return bResult;
+    }
+    //112. 路径总和 I 非递归 广度
+    public boolean hasPathSumEEx(TreeNode root, int targetSum) {
+        boolean bResult = false;
+        if (root == null){
+            return bResult;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        Queue<Integer> sumQueue = new LinkedList<>();
+        queue.offer(root);
+        sumQueue.offer(root.val);
+        while (!queue.isEmpty()){
+            root = queue.poll();
+            Integer tempSum = sumQueue.poll();
+            if (root.right == null && root.left == null){
+                if (tempSum == targetSum){
+                    bResult = true;
+                    break;
+                }
+            }else {
+                if(root.left != null){
+                    queue.offer(root.left);
+                    sumQueue.offer(tempSum + root.left.val);
+                }
+                if (root.right != null){
+                    queue.offer(root.right);
+                    sumQueue.offer(tempSum + root.right.val);
+                }
+            }
+        }
+        return bResult;
+    }
+    //113. 路径总和 II 递归
+    List<List<Integer>> sumList = new LinkedList<>();
+    Deque<Integer> tempList = new LinkedList<>();
+    private void doPathSum(TreeNode root, int targetSum){
+        if(root == null){
+            return;
+        }
+        tempList.offer(root.val);
+        if (root.left == null && root.right == null && targetSum == root.val){
+            sumList.add(new LinkedList<>(tempList));
+        }
+        doPathSum(root.left, targetSum - root.val);
+        doPathSum(root.right, targetSum - root.val);
+        tempList.pollLast();
+    }
+
+    public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+        doPathSum(root, targetSum);
+        return sumList;
+    }
+    //113. 路径总和 II 深度遍历
+    public List<List<Integer>> pathSumEx(TreeNode root, int targetSum) {
+        List<List<Integer>> sumList = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode last = root;
+        Deque<Integer> tempList = new LinkedList<>();
+        int tempSum = 0;
+        if (root == null){
+            return sumList;
+        }
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                tempSum = tempSum + root.val;
+                tempList.offer(root.val);
+                stack.push(root);
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+                if (root.right == null || root.right == last){
+                    if (root.left == null && root.right == null){
+                        if (tempSum  == targetSum){
+                            sumList.add(new LinkedList<>(tempList));
+                        }
+                    }
+                    tempList.pollLast();
+                    tempSum = tempSum - root.val;
+                    last = root;
+                    root = null;
+                }else {
+                    stack.push(root);
+                    root = root.right;
+                }
+            }
+        }
+        return sumList;
+    }
+
+    //113. 路径总和 II 广度遍历
+    Map<TreeNode, TreeNode> map = new HashMap<>();
+    private void getPath(TreeNode root){
+       List<Integer> list = new LinkedList<>();
+       while (root != null){
+           list.add(root.val);
+           root = map.get(root);
+       }
+       Collections.reverse(list);
+       sumList.add(list);
+    }
+    public List<List<Integer>> pathSumEEx(TreeNode root, int targetSum) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        Queue<Integer> sumQueue = new LinkedList<>();
+        if (root == null){
+            return sumList;
+        }
+        queue.offer(root);
+        sumQueue.offer(root.val);
+        while (!queue.isEmpty()){
+            root = queue.poll();
+            int temp = sumQueue.poll();
+            if (root.right == null && root.left == null){
+                if (temp == targetSum){
+                    getPath(root);
+                }
+            }
+            else {
+                if (root.left != null) {
+                    queue.offer(root.left);
+                    sumQueue.offer( temp + root.left.val);
+                    map.put(root.left, root);
+                }
+                if (root.right != null) {
+                    queue.offer(root.right);
+                    sumQueue.offer( temp + root.right.val);
+                    map.put(root.right, root);
+                }
+            }
+        }
+        return sumList;
+    }
+    //257. 二叉树的所有路径
+    List<String> binaryList = new LinkedList<>();
+    private void doBinaryTreePaths(TreeNode root, String path){
+        if (root == null){
+            return ;
+        }
+        StringBuffer buffer = new StringBuffer(path);
+        buffer.append(root.val);
+        if(root.right == null && root.left == null){
+            binaryList.add(buffer.toString());
+        }else {
+            buffer.append("->");
+            doBinaryTreePaths(root.left, buffer.toString());
+            doBinaryTreePaths(root.right, buffer.toString());
+        }
+    }
+    public List<String> binaryTreePaths(TreeNode root) {
+        doBinaryTreePaths(root, "");
+        return binaryList;
     }
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
@@ -223,8 +489,8 @@ public class BinaryTree{
         TreeNode right = new TreeNode(2);
         TreeNode left = new TreeNode(3);
         root.right = right;
-        right.left = left;
-        int n = tree.minDepth(root);
-        System.out.print(n);
+        root.left = left;
+        List<String> list = tree.binaryTreePaths(root);
+        System.out.print(list.size());
     }
 }
