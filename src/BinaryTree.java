@@ -1,4 +1,5 @@
 
+import Common.TreeNode;
 import com.sun.source.tree.Tree;
 
 import javax.swing.plaf.InsetsUIResource;
@@ -6,12 +7,7 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-    TreeNode(int x) { val = x; }
-}
+
 
 public class BinaryTree{
     // 二叉树深度 非递归
