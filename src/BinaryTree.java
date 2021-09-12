@@ -515,6 +515,20 @@ public class BinaryTree{
         }
         return false;
     }
+
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        TreeNode root = null;
+        if (root1 != null && root2 != null){
+            root = new TreeNode(root1.val + root2.val, mergeTrees(root1.left, root2.left) ,mergeTrees(root1.right, root2.right));
+        } else if (root1 != null){
+            root = new TreeNode(root1.val, root1.left, root1.right);
+        }
+        else if (root2 != null){
+            root = new TreeNode(root2.val, root2.left, root2.right);
+        }
+        return root;
+    }
+
     //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
@@ -527,8 +541,11 @@ public class BinaryTree{
         left.right = new TreeNode(7);
         right.left = new TreeNode(9);
         right.right = new TreeNode(11);
-        boolean result = tree.findTarget(root, 22);
-        System.out.print(result);
 
+        TreeNode root1 = new TreeNode(2);
+        root1.left = new TreeNode(2);
+        root1.right = new TreeNode(3);
+        TreeNode node = tree.mergeTrees(root, root1);
+        System.out.print(node.val);
     }
 }
