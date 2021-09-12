@@ -1,4 +1,6 @@
 
+import com.sun.jdi.IntegerType;
+import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 
 import javax.swing.plaf.InsetsUIResource;
@@ -482,6 +484,89 @@ public class BinaryTree{
     public List<String> binaryTreePaths(TreeNode root) {
         doBinaryTreePaths(root, "");
         return binaryList;
+    }
+    //剑指 Offer 27. 二叉树的镜像
+    public TreeNode mirrorTree(TreeNode root) {
+        if (root == null){
+            return root;
+        }
+        TreeNode left = mirrorTree(root.left);
+        TreeNode right = mirrorTree(root.right);
+        root.right = left;
+        root.left = right;
+        return root;
+    }
+    //剑指 Offer 32 - II. 从上到下打印二叉树 II
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> listList = new LinkedList<>();
+        if (root == null){
+            return listList;
+        }
+        Queue<TreeNode> queue = new LinkedBlockingQueue<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            List<Integer> temp = new LinkedList<>();
+            int size = queue.size();
+            while (size!=0) {
+                size--;
+                TreeNode node = queue.poll();
+                temp.add(node.val);
+                if (node.left != null) {
+                    queue.offer(node.left);
+                }
+                if (node.right != null) {
+                    queue.offer(node.right);
+                }
+            }
+            listList.add(temp);
+        }
+        return listList;
+    }
+    public Integer getDepth(TreeNode root){
+        if (root == null){
+            return 0;
+        }
+        if (root.right == null && root.left == null){
+            return 1;
+        }
+        Integer max = 0;
+        if (root.left != null){
+            max = Math.max(max, getDepth(root.left) + 1);
+        }
+        if (root.right != null){
+            max =  Math.max(max, getDepth(root.right) +1);
+        }
+        return max;
+    }
+//110. 平衡二叉树
+    public boolean isBalanced(TreeNode root) {
+        if (root == null){
+            return true;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            if(Math.abs(getDepth(node.right)-getDepth(node.left)) > 1){
+                return false;
+            }
+            if (node.right != null) queue.offer(node.right);
+            if (node.left != null) queue.offer(node.left);
+        }
+        return true;
+    }
+    private TreeNode getTreeNode(int begin, int end, int[] nums){
+        if (end < begin)
+            return null;
+        int mid = begin + (end - begin) /2;
+        TreeNode node = new TreeNode(nums[mid]);
+        node.left = getTreeNode(begin, mid - 1, nums);
+        node.right = getTreeNode(mid + 1, end, nums);
+        return node;
+    }
+//108. 将有序数组转换为二叉搜索树
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return getTreeNode(0, nums.length - 1, nums);
     }
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
