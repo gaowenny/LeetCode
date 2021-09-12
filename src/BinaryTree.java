@@ -1,6 +1,7 @@
 
 import com.sun.jdi.IntegerType;
 import com.sun.source.tree.MethodTree;
+import Common.TreeNode;
 import com.sun.source.tree.Tree;
 
 import javax.swing.plaf.InsetsUIResource;
@@ -8,12 +9,7 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-    TreeNode(int x) { val = x; }
-}
+
 
 public class BinaryTree{
     // 二叉树深度 非递归
@@ -568,14 +564,69 @@ public class BinaryTree{
     public TreeNode sortedArrayToBST(int[] nums) {
         return getTreeNode(0, nums.length - 1, nums);
     }
+    public TreeNode findNum(TreeNode root, int num){
+        if (root == null){
+            return null;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            if (node.val == num){
+                return node;
+            }
+            if (node.val > num && node.left != null) queue.offer(node.left);
+            if (node.val < num && node.right != null) queue.offer(node.right);
+        }
+        return null;
+    }
+    //653 两数之和 IV - 输入 BST
+    public boolean findTarget(TreeNode root, int k) {
+        if (root == null){
+            return false;
+        }
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            int temp = k - node.val;
+            TreeNode treeNode = findNum(root, temp);
+            if(treeNode != null && treeNode != node){
+                return true;
+            }
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        return false;
+    }
+
+    public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
+        TreeNode root = null;
+        if (root1 != null && root2 != null){
+            root = new TreeNode(root1.val + root2.val, mergeTrees(root1.left, root2.left) ,mergeTrees(root1.right, root2.right));
+        } else if (root1 != null){
+            root = new TreeNode(root1.val, root1.left, root1.right);
+        }
+        else if (root2 != null){
+            root = new TreeNode(root2.val, root2.left, root2.right);
+        }
+        return root;
+    }
+
+    //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
-        TreeNode root = new TreeNode(1);
-        TreeNode right = new TreeNode(2);
-        TreeNode left = new TreeNode(3);
+        TreeNode root = new TreeNode(8);
+        TreeNode right = new TreeNode(10);
+        TreeNode left = new TreeNode(6);
         root.right = right;
         root.left = left;
-        List<String> list = tree.binaryTreePaths(root);
-        System.out.print(list.size());
+        left.left = new TreeNode(5);
+        left.right = new TreeNode(7);
+        right.left = new TreeNode(9);
+        right.right = new TreeNode(11);
+        boolean result = tree.findTarget(root, 22);
+        System.out.print(result);
+
     }
 }
