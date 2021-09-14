@@ -481,7 +481,7 @@ public class BinaryTree{
         doBinaryTreePaths(root, "");
         return binaryList;
     }
-    //剑指 Offer 27. 二叉树的镜像
+    //剑指 Offer 27. 二叉树的镜像   226. 翻转二叉树
     public TreeNode mirrorTree(TreeNode root) {
         if (root == null){
             return root;
@@ -492,26 +492,59 @@ public class BinaryTree{
         root.left = right;
         return root;
     }
+
+    public TreeNode mirrorTreeEx(TreeNode root){
+        if (root == null) return null;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node = queue.poll();
+            TreeNode temp = node.left;
+            node.left = node.right;
+            node.right = temp;
+            if (node.left != null) queue.offer(node.left);
+            if (node.right != null) queue.offer(node.right);
+        }
+        return root;
+    }
+    public TreeNode mirrorTreeEEx(TreeNode root){
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode node = root;
+        while (root != null || !stack.isEmpty()){
+            while (root != null){
+                stack.push(root);
+                TreeNode temp = root.left;
+                root.left = root.right;
+                root.right = temp;
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+                root = root.right;
+            }
+        }
+        return node;
+    }
     //剑指 Offer 32 - II. 从上到下打印二叉树 II
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> listList = new LinkedList<>();
         if (root == null){
             return listList;
         }
-        Queue<TreeNode> queue = new LinkedBlockingQueue<>();
+        Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()){
             List<Integer> temp = new LinkedList<>();
             int size = queue.size();
             while (size!=0) {
                 size--;
-                TreeNode node = queue.poll();
-                temp.add(node.val);
-                if (node.left != null) {
-                    queue.offer(node.left);
+                root = queue.poll();
+                temp.add(root.val);
+                if (root.left != null) {
+                    queue.offer(root.left);
                 }
-                if (node.right != null) {
-                    queue.offer(node.right);
+                if (root.right != null) {
+                    queue.offer(root.right);
                 }
             }
             listList.add(temp);
@@ -613,6 +646,58 @@ public class BinaryTree{
         return root;
     }
 
+    public boolean isSymmetricEx(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        queue.offer(root);
+        while (!queue.isEmpty()){
+            TreeNode node1 = queue.poll();
+            TreeNode node2 = queue.poll();
+            if (node1 == null && node2 == null) continue;
+            if (node1 == null || node2 == null || node1.val != node2.val)return false;
+            queue.offer(node1.left);
+            queue.offer(node2.right);
+            queue.offer(node1.right);
+            queue.offer(node2.left);
+        }
+        return true;
+    }
+    // 层序遍历II
+    public List<List<Integer>> levelOrderBottom(TreeNode root) {
+        LinkedList<List<Integer>> listList = new LinkedList<>();
+        if (root == null) {
+            return listList;
+        }
+        Queue<Map.Entry<TreeNode, Integer>> queue = new LinkedList<>();
+        queue.offer(new AbstractMap.SimpleEntry<>(root, 0));
+        List<Integer> list = new LinkedList<>();
+        list.add(root.val);
+        listList.addFirst(list);
+        int level = 0;
+        while(!queue.isEmpty()){
+            Map.Entry<TreeNode, Integer> node = queue.poll();
+            if (node.getKey().left == null && node.getKey().right == null){
+                continue;
+            }
+            List<Integer> tempList;
+            if (level == node.getValue()){
+                tempList = new LinkedList<>();
+                listList.addFirst(tempList);
+            }else {
+                tempList = listList.get(0);
+            }
+            level = node.getValue() + 1;
+            if (node.getKey().left != null) {
+                tempList.add(node.getKey().left.val);
+                queue.offer(new AbstractMap.SimpleEntry<>(node.getKey().left, level));
+            }
+            if (node.getKey().right != null){
+                tempList.add(node.getKey().right.val);
+                queue.offer(new AbstractMap.SimpleEntry<>(node.getKey().right, level));
+            }
+        }
+        return listList;
+    }
     //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
@@ -629,7 +714,9 @@ public class BinaryTree{
         TreeNode root1 = new TreeNode(2);
         root1.left = new TreeNode(2);
         root1.right = new TreeNode(3);
-        TreeNode node = tree.mergeTrees(root, root1);
-        System.out.print(node.val);
+        root1.left.left = new TreeNode(1);
+        root1.left.left.left = new TreeNode(0);
+        List<List<Integer>> listList = tree.levelOrderBottom(root);
+        System.out.print(listList.size());
     }
 }
