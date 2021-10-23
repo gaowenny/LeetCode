@@ -151,7 +151,9 @@ public class BinaryTree{
             }
             if (!stack.isEmpty()){
                 root = stack.pop();
+
                 result.add(root.val);
+
                 root = root.right;
             }
         }
@@ -726,6 +728,81 @@ public class BinaryTree{
         }
         return listList;
     }
+//98恢复二叉搜索树
+    public void recoverTree(TreeNode root) {
+        List<Integer> list = inorderTraversal(root);
+        int x = -1, y = -1;
+
+        for (int i = 0; i < list.size() -1; i++){
+            if (list.get(i) > list.get(i+1)){
+                if (x == -1){
+                    x = i;
+                }else y = i;
+            }
+        }
+        if(y == -1){
+            y = list.get(x+1);
+        }else {
+            y = list.get(y+1);
+        }
+        x = list.get(x);
+        doRecoverTree(root, x, y);
+    }
+    private void doRecoverTree(TreeNode root, int x, int y){
+        if (root == null)
+            return;
+        if(root.val == x){
+            root.val = y;
+        }else if(root.val == y){
+            root.val = x;
+        }
+        doRecoverTree(root.left, x, y);
+        doRecoverTree(root.right, x, y);
+    }
+    public void recoverTreeEx(TreeNode root){
+        List<Integer> result = new LinkedList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode pre = null;
+        TreeNode x= null, y = null;
+        while (root != null || !stack.isEmpty()){
+            while (root != null){
+                stack.push(root);
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+                if (pre != null && (pre.val) >root.val){
+                    y = root;
+                    if (x == null){
+                        x = pre;
+                    }else break;
+                }
+                result.add(root.val);
+                pre = root;
+                root = root.right;
+            }
+        }
+        int temp = x.val;
+        x.val = y.val;
+        y.val = temp;
+    }
+//114转为链表
+    public void flatten(TreeNode root) {
+        if (root == null)
+            return;
+        flatten(root.left);
+        flatten(root.right);
+        if(root.left != null && root.left.left == null){
+            TreeNode temp = root.right;
+            root.right = root.left;
+            TreeNode node = root.left;
+            while (node.right != null){
+                node = node.right;
+            }
+            node.right = temp;
+            root.left = null;
+        }
+    }
     //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
@@ -739,9 +816,11 @@ public class BinaryTree{
         right.left = new TreeNode(9);
         right.right = new TreeNode(11);
 
-        TreeNode root1 = new TreeNode(2);
-        root1.left = new TreeNode(2);
-        root1.right = new TreeNode(3);
-
+        TreeNode root1 = new TreeNode(3);
+        root1.left = new TreeNode(1);
+        root1.right = new TreeNode(4);
+        root1.right.left = new TreeNode(2);
+        tree.flatten(root1);
+        System.out.println(root1.val);
     }
 }
