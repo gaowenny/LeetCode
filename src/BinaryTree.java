@@ -612,7 +612,33 @@ public class BinaryTree{
         }
         return root;
     }
+//101. 对称二叉树
+    private boolean isSymmetric(TreeNode root1, TreeNode root2){
+        if (root1 == null && root2 == null) {
+            return true;
+        }
+        if (root1 != null && root2 != null) {
+            if (root1.val == root2.val && (isSymmetric(root1.left, root2.right)) && (isSymmetric(root1.right, root2.left)) )
+             return true;
+        }
+        return false;
+    }
+    public boolean isSymmetric(TreeNode root) {
+        return isSymmetric(root.left, root.right);
+    }
 
+    public boolean isSymmetricEx(TreeNode root){
+        if (root == null) return true;
+        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> left = new LinkedList<>();
+        List<Integer> right = new LinkedList<>();
+        while (root != null || !stack.empty()){
+            while (root != null){
+                stack.push(root);
+            }
+        }
+        return false;
+    }
     //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
@@ -629,7 +655,8 @@ public class BinaryTree{
         TreeNode root1 = new TreeNode(2);
         root1.left = new TreeNode(2);
         root1.right = new TreeNode(3);
-        TreeNode node = tree.mergeTrees(root, root1);
-        System.out.print(node.val);
+
+        boolean result = tree.isSymmetric(root);
+        System.out.print(result);
     }
 }
