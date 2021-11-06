@@ -10,7 +10,7 @@ public class ListNode {
         val = x;
     }
 };
-class Node{
+class NodeList{
     public ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode pHead = new ListNode(0);
         pHead.next = head;
@@ -158,7 +158,7 @@ class Node{
         l3.next = l4;
         l4.next = l2;
 
-        Node o = new Node();
+        NodeList o = new NodeList();
         o.detectCycle(l1);
 
         while (null != l1){

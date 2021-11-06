@@ -9,7 +9,25 @@ import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
+class Node {
+    public int val;
+    public Node left;
+    public Node right;
+    public Node next;
 
+    public Node() {}
+
+    public Node(int _val) {
+        val = _val;
+    }
+
+    public Node(int _val, Node _left, Node _right, Node _next) {
+        val = _val;
+        left = _left;
+        right = _right;
+        next = _next;
+    }
+};
 
 public class BinaryTree{
     // 二叉树深度 非递归
@@ -803,6 +821,51 @@ public class BinaryTree{
             root.left = null;
         }
     }
+
+    private TreeNode buildTree(List<Integer> inOrder, List<Integer> preOrder){
+        if (preOrder.size() == 0){
+            return null;
+        }
+        TreeNode root = new TreeNode(preOrder.get(0));
+        int nIndex = inOrder.indexOf(root.val);
+        List<Integer> leftInOrder = inOrder.subList(0, nIndex);
+        List<Integer> rightInOrder = inOrder.subList(nIndex+1, inOrder.size());
+        List<Integer> leftPreOrder = preOrder.subList(1, leftInOrder.size()+1);
+        List<Integer> rightPreOrder = preOrder.subList(leftPreOrder.size()+1, preOrder.size());
+        root.right = buildTree(rightInOrder, rightPreOrder);
+        root.left = buildTree(leftInOrder, leftPreOrder);
+        return root;
+    }
+    //前序遍历和中序遍历
+    public TreeNode buildTree(int[] inorder, int[] preOrder) {
+        List<Integer> inOrderList = Arrays.stream(inorder).boxed().collect(Collectors.toList());
+        List<Integer> preOrderList = Arrays.stream(preOrder).boxed().collect(Collectors.toList());
+        return buildTree(inOrderList, preOrderList);
+    }
+//116. 填充每个节点的下一个右侧节点指针
+    public Node connect(Node root) {
+        if(root == null) return null;
+        Node result = root;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            while (size > 0){
+                size = size - 1;
+                Node node = queue.poll();
+                if (node.right != null){
+                    queue.add(node.left);
+                    queue.add(node.right);
+                }
+                if(size != 0){
+                    node.next = queue.peek();
+                }
+            }
+        }
+        return result;
+    }
+
+
     //8,6,10,5,7,9,11
     public static void main(String[] args){
         BinaryTree tree = new BinaryTree();
