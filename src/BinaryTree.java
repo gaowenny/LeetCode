@@ -822,7 +822,8 @@ public class BinaryTree{
         }
     }
 
-    private TreeNode buildTree(List<Integer> inOrder, List<Integer> preOrder){
+
+    private TreeNode buildTreeInAndPre(List<Integer> inOrder, List<Integer> preOrder){
         if (preOrder.size() == 0){
             return null;
         }
@@ -832,15 +833,15 @@ public class BinaryTree{
         List<Integer> rightInOrder = inOrder.subList(nIndex+1, inOrder.size());
         List<Integer> leftPreOrder = preOrder.subList(1, leftInOrder.size()+1);
         List<Integer> rightPreOrder = preOrder.subList(leftPreOrder.size()+1, preOrder.size());
-        root.right = buildTree(rightInOrder, rightPreOrder);
-        root.left = buildTree(leftInOrder, leftPreOrder);
+        root.right = buildTreeInAndPre(rightInOrder, rightPreOrder);
+        root.left = buildTreeInAndPre(leftInOrder, leftPreOrder);
         return root;
     }
     //前序遍历和中序遍历
-    public TreeNode buildTree(int[] inorder, int[] preOrder) {
+    public TreeNode buildTreeInAndPre(int[] inorder, int[] preOrder) {
         List<Integer> inOrderList = Arrays.stream(inorder).boxed().collect(Collectors.toList());
         List<Integer> preOrderList = Arrays.stream(preOrder).boxed().collect(Collectors.toList());
-        return buildTree(inOrderList, preOrderList);
+        return buildTreeInAndPre(inOrderList, preOrderList);
     }
 //116. 填充每个节点的下一个右侧节点指针
     public Node connect(Node root) {
@@ -865,6 +866,84 @@ public class BinaryTree{
         return result;
     }
 
+
+    private ListNode getMidNode(ListNode begin, ListNode end){
+        ListNode fast = begin;
+        ListNode slow = begin;
+        while (fast != end && fast.next != end){
+            fast = fast.next;
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return slow;
+    }
+    private TreeNode buildBST(ListNode begin, ListNode end){
+        ListNode mid = getMidNode(begin, end);
+        TreeNode node = new TreeNode(mid.val);
+        node.left = buildBST(begin, mid);
+        node.right = buildBST(mid.next, end);
+        return node;
+    }
+    public TreeNode sortedListToBST(ListNode head) {
+       return buildBST(head, null);
+    }
+//103. 二叉树的锯齿形层序遍历
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> listList = new LinkedList<>();
+        if (root == null){
+            return listList;
+        }
+        Deque<TreeNode> queue = new LinkedList<>();
+        queue.addLast(root);
+        boolean judge = true;
+        while (!queue.isEmpty()){
+            List<Integer> temp = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++){
+                if (judge){
+                    root = queue.pollFirst();
+                    temp.add(root.val);
+                    if (root.left != null) {
+                        queue.addLast(root.left);
+                    }
+                    if (root.right != null) {
+                        queue.addLast(root.right);
+                    }
+                }else {
+                    root = queue.pollLast();
+                    temp.add(root.val);
+                    if (root.right != null) {
+                        queue.addFirst(root.right);
+                    }
+                    if (root.left != null) {
+                        queue.addFirst(root.left);
+                    }
+                }
+            }
+            judge = !judge;
+            listList.add(temp);
+        }
+        return listList;
+    }
+    private TreeNode buildTreeInAndPost(List<Integer> inOrder, List<Integer> postOrder){
+        if (postOrder.size() == 0){
+            return null;
+        }
+        TreeNode root = new TreeNode(postOrder.get(postOrder.size()-1));
+        int nIndex = inOrder.indexOf(root.val);
+        List<Integer> leftInOrder = inOrder.subList(0, nIndex);
+        List<Integer> rightInOrder = inOrder.subList(nIndex+1, inOrder.size());
+        List<Integer> leftPostOrder = postOrder.subList(0, leftInOrder.size());
+        List<Integer> rightPostOrder = postOrder.subList(leftPostOrder.size(), postOrder.size()-1);
+        root.right = buildTreeInAndPost(rightInOrder, rightPostOrder);
+        root.left = buildTreeInAndPost(leftInOrder, leftPostOrder);
+        return root;
+    }
+    public TreeNode buildTreeInAndPost(int[] inorder, int[] postorder) {
+        List<Integer> inOrderList = Arrays.stream(inorder).boxed().collect(Collectors.toList());
+        List<Integer> postOrderList = Arrays.stream(postorder).boxed().collect(Collectors.toList());
+        return buildTreeInAndPost(inOrderList, postOrderList);
+    }
 
     //8,6,10,5,7,9,11
     public static void main(String[] args){
