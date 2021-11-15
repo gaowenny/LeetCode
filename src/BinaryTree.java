@@ -481,6 +481,89 @@ public class BinaryTree{
         }
         return sumList;
     }
+
+
+    //437. 路径总和 III 深度遍历
+    private int hasPath(List<Integer> list, Integer data, Integer targetSum){
+        int result = 0;
+        Integer target = targetSum - data ;
+        for (int i = list.size() - 1; i >= 0 ; i--){
+            target =  target - list.get(i);
+            if (target == 0){
+                result++;
+            }
+        }
+        return result;
+    }
+    public int pathSumIII(TreeNode root, int targetSum) {
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode last = root;
+        List<Integer> tempList = new LinkedList<>();
+        int result = 0;
+        if (root == null){
+            return 0;
+        }
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                stack.push(root);
+                if (root.val == targetSum) result++;
+                result = result + hasPath(tempList, root.val, targetSum);
+                tempList.add(root.val);
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+
+                if (root.right == null || root.right == last){
+                    tempList = tempList.subList(0, tempList.size() - 1);
+                    last = root;
+                    root = null;
+                }else {
+                    stack.push(root);
+                    root = root.right;
+                }
+            }
+        }
+        return result;
+    }
+    public int pathSumIIIEx(TreeNode root, int targetSum){
+
+        HashMap<Integer, Integer> prefix = new HashMap<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode last = root;
+        int temSum = 0;
+        int result = 0;
+        prefix.put(0,1);
+        if (root == null){
+            return 0;
+        }
+        while(root != null || !stack.isEmpty()){
+            while(root != null){
+                stack.push(root);
+                temSum += root.val;
+                result += prefix.getOrDefault( temSum - targetSum, 0);
+                prefix.put(temSum, prefix.getOrDefault(temSum, 0) + 1);
+                root = root.left;
+            }
+            if (!stack.isEmpty()){
+                root = stack.pop();
+
+                if (root.right == null || root.right == last){
+                    prefix.put(temSum, prefix.getOrDefault(temSum, 0) -1);
+                    temSum = temSum - root.val;
+                    last = root;
+                    root = null;
+                }else {
+                    stack.push(root);
+                    root = root.right;
+                }
+            }
+        }
+        return result;
+    }
+
+
+
     //257. 二叉树的所有路径
     List<String> binaryList = new LinkedList<>();
     private void doBinaryTreePaths(TreeNode root, String path){
@@ -866,6 +949,30 @@ public class BinaryTree{
         return result;
     }
 
+    //117. 填充每个节点的下一个右侧节点指针
+    public Node connectEx(Node root) {
+        if(root == null) return null;
+        Node result = root;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()){
+            int size = queue.size();
+            while (size > 0){
+                size = size - 1;
+                Node node = queue.poll();
+                if (node.left != null){
+                    queue.add(node.left);
+                }
+                if (node.right != null){
+                    queue.add(node.right);
+                }
+                if(size != 0){
+                    node.next = queue.peek();
+                }
+            }
+        }
+        return result;
+    }
 
     private ListNode getMidNode(ListNode begin, ListNode end){
         ListNode fast = begin;
@@ -944,6 +1051,53 @@ public class BinaryTree{
         List<Integer> postOrderList = Arrays.stream(postorder).boxed().collect(Collectors.toList());
         return buildTreeInAndPost(inOrderList, postOrderList);
     }
+//129. 求根节点到叶节点数字之和
+    public int sumNumbers(TreeNode root) {
+        if (root == null) return 0;
+        int result = 0;
+        Stack<TreeNode> stack = new Stack<>();
+        Integer temp = 0;
+        TreeNode pre = null;
+        while (!stack.isEmpty() || root != null){
+            while (root != null){
+                stack.push(root);
+                temp = temp * 10 + root.val;
+                root = root.left;
+            }
+
+            if (!stack.isEmpty()) {
+                root = stack.peek();
+                if (root.left == null && root.right == null){
+                    result = result + temp;
+                }
+                if (root.right == null || root.right == pre ){
+                    stack.pop();
+                    temp = (temp - root.val) / 10;
+                    pre = root;
+                    root = null;
+                }else {
+                    root = root.right;
+                }
+
+            }
+        }
+        return result;
+    }
+
+
+    private int doSumNumbersEx(TreeNode root, int preSum){
+        if (root == null) return 0;
+        preSum = preSum * 10 + root.val;
+
+        if (root.right == null && root.left == null){
+           return preSum;
+        } else {
+            return doSumNumbersEx(root.left, preSum) + doSumNumbersEx(root.right, preSum);
+        }
+    }
+    public int sumNumbersEx(TreeNode root) {
+        return doSumNumbersEx(root, 0);
+    }
 
     //8,6,10,5,7,9,11
     public static void main(String[] args){
@@ -956,13 +1110,26 @@ public class BinaryTree{
         left.left = new TreeNode(5);
         left.right = new TreeNode(7);
         right.left = new TreeNode(9);
-        right.right = new TreeNode(11);
+        right.right = new TreeNode(1);
 
-        TreeNode root1 = new TreeNode(3);
-        root1.left = new TreeNode(1);
-        root1.right = new TreeNode(4);
+        TreeNode root1 = new TreeNode(1);
+        root1.left = new TreeNode(0);
+        root1.right = new TreeNode(1);
         root1.right.left = new TreeNode(2);
-        tree.flatten(root1);
-        System.out.println(root1.val);
+        root1.right.left.left = new TreeNode(0);
+        root1.right.left.right = new TreeNode(-1);
+        root1.right.right = new TreeNode(0);
+        root1.right.right.right = new TreeNode(1);
+        root1.right.right.left = new TreeNode(0);
+        root1.left.left = new TreeNode(1);
+        root1.left.left.left = new TreeNode(-1);
+        root1.left.left.right = new TreeNode(0);
+        root1.left.left.left.left = new TreeNode(0);
+        root1.left.right= new TreeNode(1);
+        root1.left.right.left= new TreeNode(1);
+        root1.left.right.right= new TreeNode(-1);
+
+        int n = tree.pathSumIIIEx(root1, 2);
+        System.out.println(n);
     }
 }
