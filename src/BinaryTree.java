@@ -1,7 +1,12 @@
 
+import com.sun.jdi.IntegerType;
+import com.sun.source.tree.MethodTree;
 import Common.TreeNode;
+import com.sun.source.tree.Tree;
 
+import javax.swing.plaf.InsetsUIResource;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 
@@ -809,7 +814,7 @@ public class BinaryTree{
         }
         return slow;
     }
-    private TreeNode buildBST(LinkNode<Integer> begin, LinkNode end){
+    private TreeNode buildBST(LinkNode begin, LinkNode end){
         LinkNode<Integer> mid = getMidNode(begin, end);
         TreeNode node = new TreeNode(mid.val);
         node.left = buildBST(begin, mid);
@@ -891,13 +896,9 @@ public class BinaryTree{
 
         TreeNode root1 = new TreeNode(3);
         root1.left = new TreeNode(1);
-        //root1.left.right = new TreeNode(5);
         root1.right = new TreeNode(4);
         root1.right.left = new TreeNode(2);
-        root1.right.right = new TreeNode(5);
-        int[] inOrder = {9,3,15,20,7};
-        int[] postOrder = {9,15,7,20,3};
-        TreeNode node  = tree.buildTree(inOrder, postOrder);
-        System.out.println(node.val);
+        tree.flatten(root1);
+        System.out.println(root1.val);
     }
 }

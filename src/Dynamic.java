@@ -1,6 +1,7 @@
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class Dynamic {
@@ -122,6 +123,15 @@ public class Dynamic {
             maxWay = ways[n-1];
         }
         return maxWay;
+    }
+    public int climbStairsEx(int n){
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(1, 1);
+        map.put(2, 2);
+        for (int i = 3; i <= n; i++){
+            map.put(i, map.get(i - 1) + map.get(i - 2));
+        }
+        return map.get(n);
     }
 
     public int minCostClimbingStairs(int[] cost) {
@@ -274,9 +284,8 @@ public class Dynamic {
         Dynamic o = new Dynamic();
         String[] strs = {"111","1000","1000","1000"};
         int[][] obs = {{1,0}};
-        System.out.println(o.uniquePathsWithObstacles(obs));
 
-
+        int n = o.climbStairsEx(3);
 
     }
 

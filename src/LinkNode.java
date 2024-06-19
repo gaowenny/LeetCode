@@ -10,7 +10,7 @@ public class LinkNode<T> {
 };
 
 
-class Node{
+class NodeC {
     public LinkNode removeNthFromEnd(LinkNode head, int n) {
         LinkNode pHead = new LinkNode(0);
         pHead.next = head;
@@ -158,7 +158,7 @@ class Node{
         l3.next = l4;
         l4.next = l2;
 
-        Node o = new Node();
+        NodeC o = new NodeC();
         o.detectCycle(l1);
 
         while (null != l1){
