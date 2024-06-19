@@ -1,12 +1,7 @@
 
-import com.sun.jdi.IntegerType;
-import com.sun.source.tree.MethodTree;
 import Common.TreeNode;
-import com.sun.source.tree.Tree;
 
-import javax.swing.plaf.InsetsUIResource;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 
@@ -804,9 +799,9 @@ public class BinaryTree{
         }
     }
 
-    private ListNode getMidNode(ListNode begin, ListNode end){
-        ListNode fast = begin;
-        ListNode slow = begin;
+    private LinkNode getMidNode(LinkNode begin, LinkNode end){
+        LinkNode fast = begin;
+        LinkNode slow = begin;
         while (fast != end && fast.next != end){
             fast = fast.next;
             fast = fast.next;
@@ -814,14 +809,14 @@ public class BinaryTree{
         }
         return slow;
     }
-    private TreeNode buildBST(ListNode begin, ListNode end){
-        ListNode mid = getMidNode(begin, end);
+    private TreeNode buildBST(LinkNode<Integer> begin, LinkNode end){
+        LinkNode<Integer> mid = getMidNode(begin, end);
         TreeNode node = new TreeNode(mid.val);
         node.left = buildBST(begin, mid);
         node.right = buildBST(mid.next, end);
         return node;
     }
-    public TreeNode sortedListToBST(ListNode head) {
+    public TreeNode sortedListToBST(LinkNode head) {
        return buildBST(head, null);
     }
 //103. 二叉树的锯齿形层序遍历
@@ -896,9 +891,13 @@ public class BinaryTree{
 
         TreeNode root1 = new TreeNode(3);
         root1.left = new TreeNode(1);
+        //root1.left.right = new TreeNode(5);
         root1.right = new TreeNode(4);
         root1.right.left = new TreeNode(2);
-        tree.flatten(root1);
-        System.out.println(root1.val);
+        root1.right.right = new TreeNode(5);
+        int[] inOrder = {9,3,15,20,7};
+        int[] postOrder = {9,15,7,20,3};
+        TreeNode node  = tree.buildTree(inOrder, postOrder);
+        System.out.println(node.val);
     }
 }

@@ -1,9 +1,9 @@
 public class DeleteDuplicates {
-    public ListNode delteDuplicates(ListNode head){
+    public LinkNode delteDuplicates(LinkNode head){
         if (head == null)
             return head;
-        ListNode pPre = head;
-        ListNode pNext = pPre.next;
+        LinkNode pPre = head;
+        LinkNode pNext = pPre.next;
         while (pNext != null ){
             if (pPre.val == pNext.val){
                 pPre.next = pNext.next;
@@ -29,8 +29,8 @@ public class DeleteDuplicates {
         //不同的个数=跳的次数+1
         return i + 1;
     }
-    public ListNode deleteDuplicatesOffical(ListNode head){
-        ListNode p = head;
+    public LinkNode deleteDuplicatesOffical(LinkNode head){
+        LinkNode p = head;
         while (p != null && p.next != null){
             if (p.val == p.next.val){
                 p.next = p.next.next;
@@ -42,17 +42,17 @@ public class DeleteDuplicates {
     }
 
     public static void main(String[] args) {
-        ListNode l1 = new ListNode(1);
-        l1.next = new ListNode(1);
-        l1.next.next = new ListNode(2);
-        l1.next.next.next= new ListNode(2);
+        LinkNode l1 = new LinkNode(1);
+        l1.next = new LinkNode(1);
+        l1.next.next = new LinkNode(2);
+        l1.next.next.next= new LinkNode(2);
 //        ListNode p1 = l1;
 //        for (int i = 2; i< 5; i++){
 //            p1.next =  new ListNode(i + 1);
 //            p1 = p1.next;
 //        }
         DeleteDuplicates d = new DeleteDuplicates();
-        ListNode l3 = d.deleteDuplicatesOffical(l1);
+        LinkNode l3 = d.deleteDuplicatesOffical(l1);
 
         while (l3 != null){
             System.out.println(l3.val);

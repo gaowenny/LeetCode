@@ -1,6 +1,6 @@
 public class MiddleNode {
-    public ListNode middleNode(ListNode head) {
-        ListNode p = head;
+    public LinkNode middleNode(LinkNode head) {
+        LinkNode p = head;
         int nCount = 0;
         while (p != null){
             nCount ++;
@@ -15,9 +15,9 @@ public class MiddleNode {
     }
 
     //官方 快慢指针
-    public ListNode middleNodeOfficial(ListNode head){
-        ListNode pSlow = head;
-        ListNode pFast = head;
+    public LinkNode middleNodeOfficial(LinkNode head){
+        LinkNode pSlow = head;
+        LinkNode pFast = head;
         while (pFast != null && pFast.next != null){
             pSlow = pSlow.next;
             pFast = pFast.next.next;
@@ -26,14 +26,14 @@ public class MiddleNode {
     }
 
     public static void main(String[] args) {
-        ListNode l1 = new ListNode(1);
-        ListNode p1 = l1;
+        LinkNode l1 = new LinkNode(1);
+        LinkNode p1 = l1;
         for (int i = 2; i< 5; i++){
-            p1.next =  new ListNode(i + 1);
+            p1.next =  new LinkNode(i + 1);
             p1 = p1.next;
         }
         MiddleNode m = new MiddleNode();
-        ListNode l3 = m.middleNodeOfficial(l1);
+        LinkNode l3 = m.middleNodeOfficial(l1);
 
         while (l3 != null){
             System.out.println(l3.val);

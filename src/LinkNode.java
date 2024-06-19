@@ -1,21 +1,21 @@
 
-import javax.print.DocFlavor;
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
 
-public class ListNode {
-    int val;
-    ListNode next;
-    ListNode(int x) {
+public class LinkNode<T> {
+    T val;
+    LinkNode next;
+    LinkNode(T x) {
         val = x;
     }
 };
+
+
 class Node{
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode pHead = new ListNode(0);
+    public LinkNode removeNthFromEnd(LinkNode head, int n) {
+        LinkNode pHead = new LinkNode(0);
         pHead.next = head;
-        ListNode pFirst = pHead;
-        ListNode pSecond = pHead;
+        LinkNode pFirst = pHead;
+        LinkNode pSecond = pHead;
         for(int i = 0; i <= n; i++){
             pFirst = pFirst.next;
         }
@@ -27,9 +27,9 @@ class Node{
         return pHead.next;
     }
 
-    public void reorderList(ListNode head) {
+    public void reorderList(LinkNode<Integer> head) {
         List<Integer> l = new ArrayList<Integer>();
-        ListNode pFirst = head;
+        LinkNode<Integer> pFirst = head;
         while (pFirst != null){
             l.add(pFirst.val);
             pFirst = pFirst.next;
@@ -49,7 +49,7 @@ class Node{
     }
 
     /*剑指offer 05、输入个链表的头结点，从尾到头反过来打印出每个结点的值。*/
-    public void printListReversingly(ListNode node){
+    public void printListReversingly(LinkNode node){
         Stack stack = new Stack();
         while (node != null){
             stack.push(node.val);
@@ -60,20 +60,20 @@ class Node{
         }
     }
 
-    private void stackPop(Stack stack, ListNode listNode){
+    private void stackPop(Stack stack, LinkNode linkNode){
         while (!stack.isEmpty()){
-            listNode.next = new ListNode((int)stack.pop());
-            listNode = listNode.next;
+            linkNode.next = new LinkNode((int)stack.pop());
+            linkNode = linkNode.next;
         }
     }
     // 分割链表1966
-    public ListNode partition(ListNode head, int x){
-        ListNode p = head;
-        ListNode minHead = new ListNode(0);
-        ListNode maxHead = new ListNode(0);
-        ListNode minTail = minHead;
-        ListNode maxSlow = maxHead;
-        ListNode maxTail =  maxHead;
+    public LinkNode partition(LinkNode<Integer> head, int x){
+        LinkNode<Integer> p = head;
+        LinkNode<Integer> minHead = new LinkNode(0);
+        LinkNode<Integer> maxHead = new LinkNode(0);
+        LinkNode<Integer> minTail = minHead;
+        LinkNode<Integer> maxSlow = maxHead;
+        LinkNode<Integer> maxTail =  maxHead;
         while (null != p){
             if (p.val < x){
                 minTail.next = p;
@@ -83,7 +83,7 @@ class Node{
                 maxSlow = maxTail;
                 maxTail = maxTail.next;
             }else {
-                ListNode temp = new ListNode(p.val);
+                LinkNode temp = new LinkNode(p.val);
                 if (maxSlow.equals(maxTail)){
                     maxTail.next = temp;
                     maxSlow = maxTail;
@@ -102,12 +102,12 @@ class Node{
     }
 
     // 141 环形链表
-    public boolean hasCycle(ListNode head) {
+    public boolean hasCycle(LinkNode head) {
        if(head == null || head.next == null){
            return false;
        }
-       ListNode slow = head;
-       ListNode fast = head.next;
+       LinkNode slow = head;
+       LinkNode fast = head.next;
        while (slow != fast){
            if (fast == null || fast.next == null){
                return false;
@@ -118,12 +118,12 @@ class Node{
        return true;
     }
 //环形链表检测2
-    public ListNode detectCycle(ListNode head) {
+    public LinkNode detectCycle(LinkNode head) {
         if(head == null || head.next == null){
             return null;
         }
-        ListNode slow = head;
-        ListNode fast = head;
+        LinkNode slow = head;
+        LinkNode fast = head;
         do{
             if (fast == null || fast.next == null){
                 return null;
@@ -131,7 +131,7 @@ class Node{
             slow = slow.next;
             fast = fast.next.next;
         } while (slow != fast);
-        ListNode p  = head;
+        LinkNode p  = head;
         while (p != slow){
             slow = slow.next;
             p = p.next;
@@ -149,10 +149,10 @@ class Node{
         list.add(0);
         list.add(-4);
 
-        ListNode l1 = new ListNode(3);
-        ListNode l2 = new ListNode(2);
-        ListNode l3 = new ListNode(0);
-        ListNode l4 = new ListNode(-4);
+        LinkNode l1 = new LinkNode(3);
+        LinkNode l2 = new LinkNode(2);
+        LinkNode l3 = new LinkNode(0);
+        LinkNode l4 = new LinkNode(-4);
         l1.next = l2;
         l2.next = l3;
         l3.next = l4;
